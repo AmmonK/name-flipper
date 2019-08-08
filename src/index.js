@@ -6,14 +6,10 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      name: "Ammon".padEnd(15),
-      displayWord: "".padEnd(15, " "),
-      names: [
-        "Ammon".padEnd(15),
-        "Frank".padEnd(15),
-        "beans".padEnd(15),
-        "bananas".padEnd(15)
-      ],
+      name: "", //"Ammon".padEnd(15),
+      displayWord: "", //"".padEnd(15, " "),
+      wordLength: 15,
+      names: ["Ammon", "Frank", "beans", "bananas"],
       speed: 5
     };
     this.nameInput = React.createRef();
@@ -23,9 +19,17 @@ class App extends Component {
     ""
   );
 
+  componentDidMount = () => {
+    this.setState({
+      name: this.state.names[0].padEnd(this.state.wordLength),
+      displayWord: "".padEnd(this.state.wordLength)
+    });
+  };
+
   flip = (name, displayWord) => {
-    for (let i = 0; i < name.length; i++) {
-      if (name.charAt(i) != displayWord.charAt(i)) {
+    console.log("running");
+    for (let i = 0; i < this.state.wordLength; i++) {
+      if (name.charAt(i) !== displayWord.charAt(i)) {
         let newChar = this.letters[
           this.letters.indexOf(displayWord.charAt(i)) + 1
         ];
@@ -37,7 +41,7 @@ class App extends Component {
       }
     }
     this.setState({ displayWord: displayWord }, () => {
-      if (name != displayWord) {
+      if (name !== displayWord) {
         setTimeout(() => this.flip(name, displayWord), this.state.speed);
       }
     });
@@ -46,7 +50,7 @@ class App extends Component {
   changeName = () => {
     let randomIndex = this.random(this.state.names.length);
     var name = this.state.names[randomIndex];
-    this.setState({ name: name }, () => {
+    this.setState({ name: name.padEnd(15) }, () => {
       this.flip(this.state.name, this.state.displayWord);
     });
   };
