@@ -13,20 +13,18 @@ class App extends Component {
         "Frank".padEnd(15),
         "beans".padEnd(15),
         "bananas".padEnd(15)
-      ]
+      ],
+      speed: 5
     };
     this.nameInput = React.createRef();
   }
 
-  //names = ["AMMON", "JOE", "BARTHEMULE", "joseph"];
-  letters = " 123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz".split(
+  letters = " !@#$%^&*()?123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz".split(
     ""
   );
 
-  componentDidMount = () => {};
-
-  flip = displayWord => {
-    let name = this.state.name;
+  flip = (name, displayWord) => {
+    //let name = this.state.name;
     for (let i = 0; i < name.length; i++) {
       if (name.charAt(i) != displayWord.charAt(i)) {
         let newChar = this.letters[
@@ -39,25 +37,25 @@ class App extends Component {
           displayWord.substring(0, i) + newChar + displayWord.substring(i + 1);
       }
     }
-    this.setState({ displayWord: displayWord });
-    if (name != displayWord) {
-      setTimeout(() => this.flip(displayWord), 5);
-    }
+    this.setState({ displayWord: displayWord }, () => {
+      if (name != displayWord) {
+        setTimeout(() => this.flip(name, displayWord), this.state.speed);
+      }
+    });
   };
 
   changeName = () => {
     let randomIndex = this.random(this.state.names.length);
     var name = this.state.names[randomIndex];
     this.setState({ name: name }, () => {
-      this.flip(this.state.displayWord);
+      this.flip(this.state.name, this.state.displayWord);
     });
   };
 
   setNames = () => {
+    if (!this.nameInput.current.value) return;
     let newNames = this.nameInput.current.value.split(";");
-    if (newNames.length > 0) {
-      this.setState({ names: newNames.map(x => x.padEnd(15)) });
-    }
+    this.setState({ names: newNames.map(x => x.padEnd(15)) });
   };
 
   random = length =>
@@ -65,30 +63,49 @@ class App extends Component {
       (crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32) * length
     );
 
+  faster = () => {
+    let newSpeed = this.state.speed - 2;
+    if (newSpeed < 0) newSpeed = 0;
+    this.setState({ speed: newSpeed });
+  };
+
+  slower = () => {
+    let newSpeed = this.state.speed + 2;
+    this.setState({ speed: newSpeed });
+  };
+
   render() {
     return (
       <div>
-        <div style={{ display: "flex" }}>
+        <h1>Name Flipper</h1>
+        <div className="word">
           {this.state.displayWord.split("").map((x, index) => (
-            <div
-              key={index}
-              style={{
-                border: "1px solid black",
-                padding: "1px",
-                width: "15px",
-                textAlign: "center",
-                height: "1em"
-              }}
-            >
+            <div key={index} className="letter">
               {x}
             </div>
           ))}
         </div>
         <br />
-        <button onClick={() => this.changeName()}>Pick Name</button>
+
         <hr />
-        <input ref={this.nameInput} placeholder="name;name;name" />
-        <button onClick={() => this.setNames()}>Set names</button>
+        <br />
+        <input
+          className="input-text"
+          ref={this.nameInput}
+          placeholder="name;name;name"
+        />
+        <button className="raise" onClick={() => this.changeName()}>
+          Pick Name
+        </button>
+        <button className="raise" onClick={() => this.setNames()}>
+          Set names
+        </button>
+        <button className="raise" onClick={() => this.faster()}>
+          Faster ({this.state.speed})
+        </button>
+        <button className="raise" onClick={() => this.slower()}>
+          Slower ({this.state.speed})
+        </button>
         <ul>
           {this.state.names.map((x, index) => (
             <li key={index}>{x}</li>
