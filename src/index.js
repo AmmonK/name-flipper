@@ -6,11 +6,12 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      name: "", //"Ammon".padEnd(15),
-      displayWord: "", //"".padEnd(15, " "),
+      name: "",
+      displayWord: "",
       wordLength: 15,
       names: ["Ammon", "Frank", "beans", "bananas"],
-      speed: 5
+      speed: 5,
+      iterations: 0
     };
     this.nameInput = React.createRef();
   }
@@ -27,15 +28,14 @@ class App extends Component {
   };
 
   flip = (name, displayWord) => {
+    if (this.state.iterations > 200) return;
+    // counter iterations so that it does not run forever
+    this.setState({ iterations: this.state.iterations + 1 });
+    // this is here so i can see if the flip is still running when it should not be
     console.log("running");
     for (let i = 0; i < this.state.wordLength; i++) {
       if (name.charAt(i) !== displayWord.charAt(i)) {
-        let newChar = this.letters[
-          this.letters.indexOf(displayWord.charAt(i)) + 1
-        ];
-        if (!newChar) {
-          newChar = this.letters[0];
-        }
+        let newChar = this.getNextLetter(displayWord.charAt(i));
         displayWord =
           displayWord.substring(0, i) + newChar + displayWord.substring(i + 1);
       }
@@ -43,8 +43,16 @@ class App extends Component {
     this.setState({ displayWord: displayWord }, () => {
       if (name !== displayWord) {
         setTimeout(() => this.flip(name, displayWord), this.state.speed);
+      } else {
+        this.setState({ iterations: 0 });
       }
     });
+  };
+
+  getNextLetter = character => {
+    let position = this.letters.indexOf(character);
+    // ternary, if the position is less than the length of the array then increment, otherwise start at 0
+    return this.letters[position < this.letters.length - 1 ? position + 1 : 0];
   };
 
   changeName = () => {
