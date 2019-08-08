@@ -24,7 +24,6 @@ class App extends Component {
   );
 
   flip = (name, displayWord) => {
-    //let name = this.state.name;
     for (let i = 0; i < name.length; i++) {
       if (name.charAt(i) != displayWord.charAt(i)) {
         let newChar = this.letters[
@@ -78,15 +77,8 @@ class App extends Component {
     return (
       <div>
         <h1>Name Flipper</h1>
-        <div className="word">
-          {this.state.displayWord.split("").map((x, index) => (
-            <div key={index} className="letter">
-              {x}
-            </div>
-          ))}
-        </div>
+        <DisplayFlipper word={this.state.displayWord} />
         <br />
-
         <hr />
         <br />
         <input
@@ -106,14 +98,28 @@ class App extends Component {
         <button className="raise" onClick={() => this.slower()}>
           Slower ({this.state.speed})
         </button>
-        <ul>
-          {this.state.names.map((x, index) => (
-            <li key={index}>{x}</li>
-          ))}
-        </ul>
+        <ListNames names={this.state.names} />
       </div>
     );
   }
 }
+
+const DisplayFlipper = ({ word }) => (
+  <div className="word">
+    {word.split("").map((x, index) => (
+      <div key={index} className="letter">
+        {x}
+      </div>
+    ))}
+  </div>
+);
+
+const ListNames = ({ names }) => (
+  <ul>
+    {names.map((x, index) => (
+      <li key={index}>{x}</li>
+    ))}
+  </ul>
+);
 
 render(<App />, document.getElementById("root"));

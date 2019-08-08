@@ -186,6 +186,7 @@ code {
   font-weight: inherit;
   line-height: 1.5 em;
   border: 2px solid #ffa260;
+  color: #ffa260;
   background: #17181c;
   border-radius: 0.4rem;
   transition: box-shadow var(--transitionDuration);
@@ -195,6 +196,7 @@ code {
 }
 .input-text:focus {
   outline: none;
+  color: var(--colorPrimary600);
   border: 2px solid var(--colorPrimary600);
   box-shadow: 0 0.5em 0.5em -0.4em var(--colorPrimary600);
 }
